@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Birthday Surprise</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(135deg, #7878f3 0%, #ff7cf4 100%);
+      height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #d23669;
+      background-attachment: fixed;
+      
+    }
+
+    .header {
+      margin: 20px 0;
+      text-align: center;
+    }
+
+    .header h1 {
+      font-size: 3rem;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+      animation: pulse 2s infinite;
+      z-index: 89;
+      font-family: Comic sans MS;
+      color: rgb(238, 78, 38);
+    }
+    h2 {
+      font-size: 30px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+      animation: pulse 2s infinite;
+      z-index: 89;
+      font-family: Comic sans MS;
+      color: rgb(163, 7, 10);
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      margin: 20px;
+      width: 100%;
+      max-width: 800px;
+      z-index: 99;
+    }
+
+    .gallery img {
+      text-align: center;
+      width: 170px;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 10px;
+      box-shadow: 12px 20px 18px rgba(0, 0, 0, 0.2);
+      transition: transform 0.3s;
+      cursor: pointer;
+      float: center;
+      border:1px solid rgb(79, 12, 12);
+    }
+
+    .gallery img:hover {
+      transform: scale(1.15);
+    }
+
+    .controls {
+      margin: 20px 0;
+      display: flex;
+      gap: 20px;
+    }
+
+    button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 50px;
+      background: #d23669;
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+      box-shadow: 0 0px 8px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s;
+      z-index: 89;
+    }
+
+    button:hover {
+      background: #ff4757;
+      transform: translateY(-3px);
+    }
+
+    #surpriseCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 100;
+      display: none;
+      animation-duration: 1s;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    .confetti {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background-color: #f00;
+      opacity: 0.7;
+      animation: fall linear forwards;
+    }
+
+    @keyframes fall {
+      to {
+        transform: translateY(100vh);
+      }
+    }
+
+    .message {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      background-color: rgba(228, 86, 164, 0.9);
+      padding: 20px;
+      color:blue;
+      font-weight: bold;
+      border: 1px solid rgb(66, 0, 0);
+      border-radius: 10px;
+      box-shadow: 20px 0 20px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      z-index: 200;
+      transition: transform 1.5s;
+      max-width: 80%;
+      animation-duration: 10s;
+    }
+
+    .message.show {
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    .tiny-heart {
+      position: absolute;
+      font-size: 20px;
+      animation: float 6s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { 
+        transform: translate(0, 0) rotate(0deg);
+      }
+      25% { 
+        transform: translate(5px, -5px) rotate(3deg);
+      }
+      50% { 
+        transform: translate(0, -10px) rotate(0deg);
+      }
+      75% { 
+        transform: translate(-5px, -5px) rotate(-3deg);
+      }
+    }
+    .title {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 50px;
+      background: #d23669;
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+      box-shadow: 0 0px 8px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s;
+      z-index: 99;
+    }
+    .title:hover {
+      background: #ff4757;
+      transform: translateY(-3px);
+    }
+    .game {
+      margin: 10px;
+      display: inline;
+      width: 70px;
+      height: 70px;
+      border-radius: 50px;
+      z-index: 100;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.7);
+      border: 3px solid #ff99cc;
+      object-fit: cover;
+      transition: all 0.4s;
+    }
+    .game:hover {
+      transform:scale(1.1);
+    }
+    .flex {
+      display: flex;
+    }
+    footer {
+  width: 100%;
+  text-align: center;
+  padding: 10px 0;
+  background: rgba(255, 255, 255, 0.3);
+  color: #d63384;
+  font-size: 0.9em;
+  z-index: 10;
+}
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>🎉Happy Birthday!🎉<br>My lovely baby❤️</h1>
+  </div>
+
+  <div class="gallery" id="gallery">
+    <!-- Images will be added by JavaScript -->
+  </div>
+
+  <div class="controls">
+    <button id="audioControl">Play Music</button>
+    
+    <button id="surpriseBtn">Suprize for you Click Me!</button>
+  </div>
+  <div class="title">Game</div>
+  <div class="flex"> 
+  <a href="game.html"><img src="click.png" class="game" aria-placeholder="click"></a>
+  <a href="typinggame.html"><img src="image.png" class="game"></a>
+</div>
+ <h2>🎉20<sup>th</sup> Birthday to Pyae Pyae❤️</h2>
+
+  <audio id="birthdayAudio" loop>
+    <source src="hbd.mp3" type="audio/mpeg">
+  </audio>
+  
+
+  <canvas id="surpriseCanvas"></canvas>
+
+  <div class="message" id="message">
+    <h2>🎉Happy Birthday bubu!</h2>
+    <p> Wishing you a wonderful day!
+         💘ဒီနေ့ ကျရောက်တဲ့ baby ရဲ့ ၂၀ နှစ်ပြည့် မွေးနေ့မှ စပြီး လိုအင်ဆန္ဒ များ အားလုံးပြည့်ဝ ပါစေ<br>
+        ကျန်းမာပျော်ရွှင်တဲ့ ဘဝ ကိုအမြဲပိုင်ဆိုင်ပါစေ baby လေးရေ 💝<br>I love love you so much❤️</p>
+  </div>
+  <footer>
+    <p>💖 With all my heart for you, Bubu 💖</p>
+    <p>Developed by dudu | &copy;copyright<a href="thereisnogod202@gmail.com">gmail</a>  2025/5/August</p>
+    <p></p>
+  </footer>
+
+  <script>
+    // Gallery images (two sets of 10 images)
+    const imageSets = [
+      [
+        'bubu11.jpg',
+        'bubu2.jpg',
+        'bubu14.jpg',
+        'bubu4.jpg',
+        'bubu5.jpg',
+        'bubu6.jpg',
+        'bubu13.jpg',
+        'bubu8.jpg',
+        'bubu16.jpg',
+        'bubu17.jpg'
+      ],
+      [
+        'baby1.jpg',
+        'baby2.jpg',
+        'baby6.jpg',
+        'baby10.jpg',
+        'baby9.jpg',
+        'baby3.jpg',
+        'baby7.jpg',
+        'baby11.jpg',
+        'baby5.jpg',
+        'baby4.jpg'
+      ]
+    ];
+
+    // Initialize gallery with first set of images
+    const gallery = document.getElementById('gallery');
+    let currentImageSet = 0;
+    
+    function loadImages(setIndex) {
+      gallery.innerHTML = '';
+      imageSets[setIndex].forEach(imgUrl => {
+        const img = document.createElement('img');
+        img.src = imgUrl;
+        img.alt = "Birthday photo";
+        gallery.appendChild(img);
+      });
+    }
+    
+    loadImages(0);
+
+    // Audio control
+    const audioControl = document.getElementById('audioControl');
+    const birthdayAudio = document.getElementById('birthdayAudio');
+    let isPlaying = false;
+    
+    audioControl.addEventListener('click', () => {
+      if (isPlaying) {
+        birthdayAudio.pause();
+        audioControl.textContent = 'Play Music';
+      } else {
+        birthdayAudio.play();
+        audioControl.textContent = 'Pause Music';
+      }
+      isPlaying = !isPlaying;
+    });
+    
+
+    // Surprise animation
+    const surpriseBtn = document.getElementById('surpriseBtn');
+    const canvas = document.getElementById('surpriseCanvas');
+    const ctx = canvas.getContext('2d');
+    const message = document.getElementById('message');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    
+    // Resize canvas when window resizes
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+
+    // Heart particles - very small and subtle movement
+    const hearts = [];
+    let animationId;
+    
+    function heartShape(t, scale = 1) {
+      const x = 16 * Math.pow(Math.sin(t), 3) * scale;
+      const y = - (13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t)) * scale;
+      return [x, y];
+    }
+
+    function createHearts() {
+      for (let i = 0; i < 20; i++) { // More hearts but very small
+        hearts.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          size: 1 + Math.random() * 2, // Very small size (1-3px)
+          speedX: (Math.random() - 0.5) * 0.3, // Very slow movement
+          speedY: (Math.random() - 0.5) * 0.3,
+          angle: 0,
+          rotationSpeed: (Math.random() - 0.5) * 0.02, // Very slow rotation
+          color: `hsla(${Math.random() * 60 + 330}, 100%, 70%, 0.7)`
+        });
+      }
+    }
+
+    function drawHeart(x, y, size, rotation, color) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(rotation);
+      ctx.beginPath();
+      
+      for (let i = 0; i < Math.PI * 2; i += 0.01) {
+        const [hx, hy] = heartShape(i, size);
+        if (i === 0) {
+          ctx.moveTo(hx, hy);
+        } else {
+          ctx.lineTo(hx, hy);
+        }
+      }
+      
+      ctx.closePath();
+      ctx.fillStyle = color;
+      ctx.shadowColor = 'pink';
+      ctx.shadowBlur = 2; // Very small shadow
+      ctx.fill();
+      ctx.restore();
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Draw floating hearts with subtle movement
+      hearts.forEach(heart => {
+        heart.x += heart.speedX;
+        heart.y += heart.speedY;
+        heart.angle += heart.rotationSpeed;
+        
+        // Bounce off edges very gently
+        if (heart.x < 0 || heart.x > canvas.width) heart.speedX *= -0.3;
+        if (heart.y < 0 || heart.y > canvas.height) heart.speedY *= -0.3;
+        
+        drawHeart(heart.x, heart.y, heart.size, heart.angle, heart.color);
+      });
+      
+      animationId = requestAnimationFrame(draw);
+    }
+
+    function createConfetti() {
+      const colors = ['#f00', '#0f0', '#00f', '#ff0', '#f0f', '#0ff'];
+      for (let i = 0; i < 150; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = `${Math.random() * 100}vw`;
+        confetti.style.animationDuration = `${Math.random() * 2 + 2}s`;
+        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.width = `${Math.random() * 10 + 5}px`;
+        confetti.style.height = `${Math.random() * 10 + 5}px`;
+        confetti.style.borderRadius = `${Math.random() * 50}%`;
+        document.body.appendChild(confetti);
+        
+        setTimeout(() => {
+          confetti.remove();
+        }, 5000);
+      }
+    }
+
+    function createTinyHearts() {
+      for (let i = 0; i < 20; i++) {
+        const heart = document.createElement('div');
+        heart.className = 'tiny-heart';
+        heart.textContent = '❤️';
+        heart.style.left = `${Math.random() * 100}vw`;
+        heart.style.top = `${Math.random() * 100}vh`;
+        heart.style.animationDelay = `${Math.random() * 2}s`;
+        heart.style.opacity = Math.random() * 0.5 + 0.3;
+        document.body.appendChild(heart);
+        
+        setTimeout(() => {
+          heart.remove();
+        }, 6000);
+      }
+    }
+
+    surpriseBtn.addEventListener('click', () => {
+      // Show surprise animation
+      canvas.style.display = 'block';
+      canvas.style.zIndex = '1';
+      createHearts();
+      draw();
+      
+      // Create confetti falling from top
+      createConfetti();
+      
+      // Create tiny floating hearts
+      createTinyHearts();
+      
+      // Show message with heart
+      setTimeout(() => {
+        message.classList.add('show');
+      }, 500);
+      
+      // Hide message after 3 seconds
+      setTimeout(() => {
+        message.classList.remove('show');
+      }, 6000);
+      
+      // Change image set
+      currentImageSet = (currentImageSet + 1) % imageSets.length;
+      loadImages(currentImageSet);
+    });
+
+    // Clean up animation when leaving page
+    window.addEventListener('beforeunload', () => {
+      cancelAnimationFrame(animationId);
+    });
+    
+  </script>
+</body>
+</html>

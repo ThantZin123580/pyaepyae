@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mini Heart Game</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      margin-top: 30px;
+      background-image: url(bubu5.jpg);
+      background-size:contain;
+      background-position: center center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      font-family: 'Segoe UI', sans-serif;
+      overflow: hidden;
+      text-align: center;
+      
+    }
+
+    h1 {
+      margin: 20px 0;
+      font-size: 2em;
+      color: #d63384;
+    }
+
+    #scoreboard {
+      font-size: 1.2em;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .heart {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      background: url('https://cdn-icons-png.flaticon.com/512/833/833472.png') no-repeat center/cover;
+      cursor: pointer;
+      animation: floatUp 5s linear infinite;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(100vh);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-100px);
+        opacity: 0;
+      }
+    }
+
+    #startBtn {
+      margin-top: 10px;
+      padding: 10px 20px;
+      background: #771a6c;
+      color: white;
+      border: none;
+      border-radius: 20px;
+      font-size: 1em;
+      cursor: pointer;
+    }
+    button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      background: #771a6c;
+      color: white;
+      border: none;
+      border-radius: 20px;
+      font-size: 1em;
+      cursor: pointer;
+      
+    }
+    button a {
+      text-decoration: none;
+      color: white;
+    }
+    button:hover {
+      background: #ff1493;
+    }
+    #startBtn:hover {
+      background: #ff1493;
+    }
+
+    #timer {
+      font-size: 1.2em;
+      margin: 10px 0;
+      color: #000000;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>💖 Click the Hearts! 💖</h1>
+  <div id="scoreboard">Score: 0</div>
+  <div id="timer">Time: 10s</div>
+  <button id="startBtn">Start Game</button>
+  <button><a href="project2.html">Back to home</a></button>
+  <button id="audioControl">Play Music</button>
+  <audio id="birthdayAudio" loop>
+    <source src="miss.mp3" type="audio/mpeg">
+  </audio>
+  <script>
+    const startBtn = document.getElementById('startBtn');
+    const scoreboard = document.getElementById('scoreboard');
+    const timerDisplay = document.getElementById('timer');
+  
+    let score = 0;
+    let gameInterval;
+    let gameDuration = 10;
+    let gameStarted = false;
+  
+    function createHeart() {
+      const heart = document.createElement('div');
+      heart.classList.add('heart');
+      heart.style.left = Math.random() * (window.innerWidth - 50) + 'px';
+      heart.addEventListener('click', () => {
+        score++;
+        scoreboard.innerText = `Score: ${score}`;
+        heart.remove();
+      });
+  
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 5000);
+    }
+  
+    function startGame() {
+      if (gameStarted) return;
+      gameStarted = true;
+      score = 0;
+      scoreboard.innerText = `Score: 0`;
+      let timeLeft = gameDuration;
+      timerDisplay.innerText = `Time: ${timeLeft}s`;
+  
+      gameInterval = setInterval(() => {
+        createHeart();
+      }, 400);
+  
+      const countdown = setInterval(() => {
+        timeLeft--;
+        timerDisplay.innerText = `Time: ${timeLeft}s`;
+        if (timeLeft <= 0) {
+          clearInterval(countdown);
+          clearInterval(gameInterval);
+          gameStarted = false;
+          alert(`⏰ Time's up!\nGood job bubu!\n🎉 Your score: ${score}`);
+        }
+      }, 1000);
+    }
+  
+    startBtn.addEventListener('click', startGame);
+    // Audio control
+    const audioControl = document.getElementById('audioControl');
+    const birthdayAudio = document.getElementById('birthdayAudio');
+    let isPlaying = false;
+    
+    audioControl.addEventListener('click', () => {
+      if (isPlaying) {
+        birthdayAudio.pause();
+        audioControl.textContent = 'Play Music';
+      } else {
+        birthdayAudio.play();
+        audioControl.textContent = 'Pause Music';
+      }
+      isPlaying = !isPlaying;
+    });
+  </script>
+  
+
+</body>
+</html>

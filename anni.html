@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday Surprise!</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background: #42b5fd;
+            background: linear-gradient(135deg, #42b5fd, #f98294);
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            text-align: center;
+            position: relative;
+            z-index: 10;
+            padding: 20px;
+            max-width: 800px;
+        }
+
+        h1 {
+            color: #e600ff;
+            text-shadow: 2px 2px 4px rgba(255, 0, 0, 0.3);
+            font-size: 3rem;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+
+        .photo-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .photo {
+            width: 100%;
+            height: 150px;
+            border-radius: 10px;
+            object-fit: cover;
+            box-shadow: 0 4px 8px rgba(75, 59, 59, 0.2);
+            transition: all 0.5s ease;
+            cursor: pointer;
+            background-color: rgba(255,255,255,0.2);
+            position: relative;
+            z-index: 5;
+        }
+
+        .photo:hover {
+            transform: scale(1.05);
+            box-shadow: 0 9px 18px rgba(0, 0, 0, 0.3);
+        }
+
+        .photo.enlarged {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(2);
+            z-index: 100;
+            height: auto;
+            max-height: 80vh;
+            max-width: 80vw;
+            animation: photoPop 0.5s forwards;
+            box-shadow: 0 0 40px rgba(0,0,0,0.6);
+        }
+
+        .photo-spin {
+            animation: spin 0.8s linear 1;
+        }
+
+        .photo-float {
+            animation: floatUp 1s ease-in-out forwards;
+        }
+
+        .blind-box {
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(45deg, #ff69b4, #4169e1);
+            margin: 30px auto;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .blind-box:hover {
+            transform: translateY(-10px);
+        }
+
+        .blind-box::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom right,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0.8) 50%,
+                rgba(255, 255, 255, 0) 100%
+            );
+            transform: rotate(30deg);
+            animation: shine 3s infinite;
+        }
+
+        .surprise-message {
+            display: none;
+            background-color: rgb(53, 117, 244);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 1s;
+        }
+
+        .surprise-message h2 {
+            color: #eb3691;
+            margin-bottom: 10px;
+        }
+
+        .surprise-message p {
+            color: #ffffff;
+            font-size: 1.1rem;
+            line-height: 1.5;
+        }
+
+        .heart {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: #ff69b4;
+            transform: rotate(45deg);
+            animation: float 5s infinite ease-in-out;
+            opacity: 0.7;
+            z-index: 1;
+        }
+
+        .heart:before,
+        .heart:after {
+            content: '';
+            width: 20px;
+            height: 20px;
+            background-color: #ff69b4;
+            border-radius: 50%;
+            position: absolute;
+        }
+
+        .heart:before {
+            top: -10px;
+            left: 0;
+        }
+
+        .heart:after {
+            top: 0;
+            left: -10px;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0,0,0,0.7);
+            z-index: 90;
+            display: none;
+        }
+
+        @keyframes float {
+            0% {
+                transform: rotate(45deg) translateY(0) translateX(0);
+                opacity: 0.7;
+            }
+            50% {
+                transform: rotate(45deg) translateY(-20px) translateX(10px);
+                opacity: 1;
+            }
+            100% {
+                transform: rotate(45deg) translateY(0) translateX(0);
+                opacity: 0.7;
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        @keyframes shine {
+            0% {
+                left: -100%;
+                top: -100%;
+            }
+            20% {
+                left: 100%;
+                top: 100%;
+            }
+            100% {
+                left: 100%;
+                top: 100%;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes photoPop {
+            0% {
+                transform: translate(-50%, -50%) scale(0.5);
+                opacity: 0;
+            }
+            70% {
+                transform: translate(-50%, -50%) scale(1.1);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes spin {
+            0% {
+                transform: translate(-50%, -50%) rotate(0deg) scale(1);
+            }
+            50% {
+                transform: translate(-50%, -50%) rotate(180deg) scale(1.2);
+            }
+            100% {
+                transform: translate(-50%, -50%) rotate(360deg) scale(1);
+            }
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translate(-50%, -50%) scale(1);
+            }
+            100% {
+                transform: translate(-50%, -30%) scale(1.5);
+            }
+        }
+
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background-color: #f00;
+            opacity: 0;
+            z-index: 999;
+            animation: fall 3s linear forwards;
+        }
+
+        @media (max-width: 600px) {
+            .photo-gallery {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            h1 {
+                font-size: 2rem;
+            }
+            .photo.enlarged {
+                transform: translate(-50%, -50%) scale(1.5);
+                max-width: 90vw;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay" id="overlay"></div>
+    <div class="container">
+        <h1>Happy One Year Anniversary ပါ bubu လေးရေ!</h1>
+        
+        <div class="photo-gallery" id="photoGallery">
+            <!-- Initial photos will be loaded by JavaScript -->
+        </div>
+        
+        <div class="blind-box" id="blindBox">
+            Click for More Surprise Photos!
+        </div>
+        
+        <div class="surprise-message" id="surpriseMessage">
+            <h2>Wishing You an Amazing Anniversary!</h2>
+            <p>May your day be filled with joy, laughter, and all the things you love most. You're an incredible person, and I hope this year brings you everything you've been dreaming of. Enjoy your special day!</p>
+        </div>
+    </div>
+
+    <script>
+        // Photo sets - first 10 are initial, next 10 appear after click
+        const photoSets = [
+            // Initial set (shown first)
+            [
+                "bubu1.jpg",
+                "bubu2.jpg",
+                "bubu3.jpg",
+                "bubu4.jpg",
+                "bubu5.jpg",
+                "bubu6.jpg",
+                "bubu7.jpg",
+                "bubu8.jpg",
+                "bubu9.jpg",
+                "bubu10.jpg",
+                "bubu11.jpg"
+            ],
+            // Surprise set (shown after click)
+            [
+                "bubu11.jpg",
+                "bubu12.jpg",
+                "bubu13.jpg",
+                "bubu14.jpg",
+                "bubu15.jpg",
+                "bubu16.jpg",
+                "bubu17.jpg",
+                "bubu18.jpg",
+                "bubu19.jpg",
+                "bubu20.jpg",
+                "bubu11.jpg"
+            ]
+        ];
+
+        // Create floating hearts
+        function createHearts() {
+            const colors = ['#ff69b4', '#ff1493', '#ffb6c1', '#87cefa', '#4169e1'];
+            for (let i = 0; i < 20; i++) {
+                const heart = document.createElement('div');
+                heart.classList.add('heart');
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.top = Math.random() * 100 + 'vh';
+                heart.style.width = (Math.random() * 20 + 10) + 'px';
+                heart.style.height = heart.style.width;
+                heart.style.animationDuration = (Math.random() * 3 + 3) + 's';
+                heart.style.animationDelay = (Math.random() * 2) + 's';
+                heart.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                
+                document.body.appendChild(heart);
+            }
+        }
+
+        // Create confetti effect
+        function createConfetti() {
+            const colors = ['#ff0000', '#ff69b4', '#4169e1', '#ffff00', '#00ff00'];
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.width = (Math.random() * 10 + 5) + 'px';
+                confetti.style.height = (Math.random() * 10 + 5) + 'px';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                confetti.style.animationDelay = (Math.random() * 0.5) + 's';
+                
+                document.body.appendChild(confetti);
+                
+                // Remove confetti after animation
+                setTimeout(() => {
+                    confetti.remove();
+                }, 3000);
+            }
+        }
+
+        // Animate photo when clicked
+        function animatePhoto(photo) {
+            const overlay = document.getElementById('overlay');
+            const clonedPhoto = photo.cloneNode();
+            
+            // Position the clone where the original is
+            const rect = photo.getBoundingClientRect();
+            clonedPhoto.style.position = 'absolute';
+            clonedPhoto.style.top = `${rect.top}px`;
+            clonedPhoto.style.left = `${rect.left}px`;
+            clonedPhoto.style.width = `${rect.width}px`;
+            clonedPhoto.style.height = `${rect.height}px`;
+            clonedPhoto.style.margin = '0';
+            clonedPhoto.style.transition = 'all 0.5s ease';
+            
+            document.body.appendChild(clonedPhoto);
+            
+            // Show overlay
+            overlay.style.display = 'block';
+            
+            // Enlarge animation
+            setTimeout(() => {
+                clonedPhoto.classList.add('enlarged');
+                
+                // Randomly choose between spin or float animation
+                setTimeout(() => {
+                    if (Math.random() > 0.5) {
+                        clonedPhoto.classList.add('photo-spin');
+                    } else {
+                        clonedPhoto.classList.add('photo-float');
+                    }
+                    
+                    // Return to normal after animations
+                    setTimeout(() => {
+                        clonedPhoto.style.transition = 'all 0.3s ease';
+                        clonedPhoto.classList.remove('photo-spin', 'photo-float');
+                        clonedPhoto.style.transform = 'translate(-50%, -50%) scale(1)';
+                        
+                        // Close when clicked
+                        clonedPhoto.onclick = function() {
+                            clonedPhoto.style.transform = 'translate(-50%, -50%) scale(0)';
+                            clonedPhoto.style.opacity = '0';
+                            overlay.style.opacity = '0';
+                            
+                            setTimeout(() => {
+                                document.body.removeChild(clonedPhoto);
+                                overlay.style.display = 'none';
+                                overlay.style.opacity = '1';
+                            }, 300);
+                        };
+                    }, 1000);
+                }, 500);
+            }, 10);
+        }
+
+        // Load photos into gallery
+        function loadPhotos(photoSetIndex) {
+            const gallery = document.getElementById('photoGallery');
+            gallery.innerHTML = ''; // Clear existing photos
+            
+            photoSets[photoSetIndex].forEach((photoUrl, index) => {
+                const img = document.createElement('img');
+                img.src = photoUrl;
+                img.alt = `Birthday surprise photo ${index + 1}`;
+                img.classList.add('photo');
+                
+                // Add click event to each photo
+                img.addEventListener('click', function() {
+                    if (photoSetIndex === 0) {
+                        // First click loads surprise photos
+                        loadPhotos(1);
+                        createConfetti();
+                        document.getElementById('blindBox').style.display = 'none';
+                        document.getElementById('surpriseMessage').style.display = 'block';
+                    } else {
+                        // Second click animates the photo
+                        animatePhoto(this);
+                    }
+                });
+                
+                gallery.appendChild(img);
+            });
+        }
+
+        // Blind box click event
+        document.getElementById('blindBox').addEventListener('click', function() {
+            loadPhotos(1); // Load the surprise photo set
+            createConfetti();
+            this.style.display = 'none';
+            document.getElementById('surpriseMessage').style.display = 'block';
+        });
+
+        // Close overlay when clicked
+        document.getElementById('overlay').addEventListener('click', function() {
+            this.style.display = 'none';
+            const enlargedPhotos = document.querySelectorAll('.photo.enlarged');
+            enlargedPhotos.forEach(photo => {
+                document.body.removeChild(photo);
+            });
+        });
+
+        // Initialize
+        window.onload = function() {
+            createHearts();
+            loadPhotos(0); // Load initial photo set
+            
+            // Make photos bounce on page load
+            setTimeout(() => {
+                const photos = document.querySelectorAll('.photo');
+                photos.forEach((photo, index) => {
+                    setTimeout(() => {
+                        photo.style.transform = 'translateY(-20px)';
+                        setTimeout(() => {
+                            photo.style.transform = 'translateY(0)';
+                        }, 300);
+                    }, index * 100);
+                });
+            }, 500);
+        };
+    </script>
+</body>
+</html>

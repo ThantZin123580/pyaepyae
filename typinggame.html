@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Birthday Surprise + Typing Game</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(to bottom right, #131a33, #7a1b1e);
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      overflow-x: hidden;
+      text-align: center;
+      color: #333;
+      background-position: center;
+      background-attachment: fixed;
+    }
+
+    h1 {
+      margin: 20px 0;
+      font-size: 2.5em;
+      color: #ca0303;
+      text-shadow: 2px 2px #000000;
+    }
+
+    #scoreboard, #timer {
+      font-size: 1.2em;
+      margin: 10px;
+    }
+
+    .typing-container {
+      margin-top: 50px;
+      position: relative;
+      display: inline-block;
+      padding: 30px;
+      background: #e6e6e6;
+      border-radius: 20px;
+      box-shadow: 20px 20px 20px rgba(0, 0, 0, 0.4);
+      animation: giftOpen 1s ease forwards;
+      transform: scale(0);
+    }
+
+    @keyframes giftOpen {
+      to {
+        transform: scale(1);
+      }
+    }
+
+    #letter {
+      font-size: 100px;
+      margin: 20px 0;
+      color: #ff1493;
+      text-shadow: 2px 2px #fff;
+    }
+
+    #startBtn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background: #f1429a;
+      color: white;
+      border: none;
+      border-radius: 20px;
+      font-size: 1em;
+      cursor: pointer;
+    }
+    button{
+      margin-top: 20px;
+      padding: 10px 20px;
+      background: #f1429a;
+      color: white;
+      border: none;
+      border-radius: 20px;
+      font-size: 1em;
+      cursor: pointer;
+    }
+    button a {
+      text-decoration: none;
+      color: white;
+    }
+    button:hover{
+      background: #ff1493;
+    }
+
+    #startBtn:hover {
+      background: #ff1493;
+    }
+
+  </style>
+</head>
+<body>
+
+  <h1>🎉Typing Game🎉</h1>
+
+  <div class="typing-container">
+    <h2>Typing Game Challenge</h2>
+    <div id="letter">A</div>
+    <div id="scoreboard">Score: 0</div>
+    <div id="timer">Time Left: 30s</div>
+    <button id="startBtn">Start Game</button>
+    <button><a href="project2.html" >Back to home</a></button>
+    <button id="audioControl">Play Music</button>
+  <audio id="birthdayAudio" loop>
+    <source src="work.mp3" type="audio/mpeg">
+  </audio>
+  </div>
+
+  <script>
+    let score = 0;
+    let timeLeft = 30;
+    let gameStarted = false;
+    let countdown;
+    let currentLetter = '';
+    const letterDisplay = document.getElementById('letter');
+    const scoreboard = document.getElementById('scoreboard');
+    const timerDisplay = document.getElementById('timer');
+    const startBtn = document.getElementById('startBtn');
+
+    function getRandomLetter() {
+      const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      return letters[Math.floor(Math.random() * letters.length)];
+    }
+
+    function showNewLetter() {
+      currentLetter = getRandomLetter();
+      letterDisplay.textContent = currentLetter;
+    }
+
+    function startGame() {
+      if (gameStarted) return;
+      gameStarted = true;
+      score = 0;
+      timeLeft = 30;
+      scoreboard.textContent = `Score: 0`;
+      timerDisplay.textContent = `Time Left: ${timeLeft}s`;
+      showNewLetter();
+
+      countdown = setInterval(() => {
+        timeLeft--;
+        timerDisplay.textContent = `Time Left: ${timeLeft}s`;
+        if (timeLeft <= 0) {
+          clearInterval(countdown);
+          gameStarted = false;
+          alert(`Time's up!\nYour score: ${score}`);
+          letterDisplay.textContent = '-';
+        }
+      }, 1000);
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (!gameStarted) return;
+      if (e.key.toUpperCase() === currentLetter) {
+        score++;
+        scoreboard.textContent = `Score: ${score}`;
+        showNewLetter();
+      }
+    });
+
+    startBtn.addEventListener('click', startGame);
+    // Audio control
+    const audioControl = document.getElementById('audioControl');
+    const birthdayAudio = document.getElementById('birthdayAudio');
+    let isPlaying = false;
+    
+    audioControl.addEventListener('click', () => {
+      if (isPlaying) {
+        birthdayAudio.pause();
+        audioControl.textContent = 'Play Music';
+      } else {
+        birthdayAudio.play();
+        audioControl.textContent = 'Pause Music';
+      }
+      isPlaying = !isPlaying;
+    });
+  </script>
+
+</body>
+</html>

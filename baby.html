@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Birthday Surprise + Typing Game</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(135deg, #f581d2 0%, #ab83fb 100%);
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #d23669;
+    }
+
+    .header h1 {
+      font-size: 3rem;
+      margin: 20px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+      animation: pulse 2s infinite;
+      font-family: 'Comic Sans MS';
+      color: rgb(238, 78, 38);
+      text-align: center;
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      margin: 20px;
+      width: 100%;
+      max-width: 800px;
+    }
+
+    .gallery img {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 10px;
+      transition: transform 0.3s;
+      cursor: pointer;
+    }
+
+    .gallery img:hover {
+      transform: scale(1.15);
+    }
+
+    .controls, .typing-controls {
+      margin: 20px 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+    }
+
+    button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 50px;
+      background: #d23669;
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    button:hover {
+      background: #ff4757;
+      transform: translateY(-3px);
+    }
+
+    #letter {
+      font-size: 80px;
+      margin-top: 20px;
+    }
+
+    #scoreboard, #timer {
+      font-size: 20px;
+      margin: 5px 0;
+    }
+
+    .message {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      background-color: rgba(229, 126, 197, 0.9);
+      padding: 20px;
+      color: blue;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      z-index: 200;
+      transition: transform 1.5s;
+      max-width: 80%;
+    }
+
+    .message.show {
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Happy Birthday!<br>My lovely bubu❤️</h1>
+  </div>
+
+  <div class="gallery" id="gallery"></div>
+
+  <div class="controls">
+    <button id="audioControl">Play Music</button>
+    <button id="surpriseBtn">Surprise for you! Click Me!</button>
+  </div>
+
+  <div class="typing-controls">
+    <h2>🎉 Cute Typing Game 🎉</h2>
+    <div id="letter">A</div>
+    <div id="scoreboard">Score: 0</div>
+    <div id="timer">Time Left: 30s</div>
+    <button id="startBtn">Start Typing Game</button>
+  </div>
+
+  <audio id="birthdayAudio" loop>
+    <source src="dudububu/Justin_Bieber_-_Ghost(48k)_3.mp3" type="audio/mpeg">
+  </audio>
+
+  <div class="message" id="message">
+    <h2>Happy Birthday bubu!</h2>
+    <p>❤️ Wishing you a wonderful day!<br>💘 ဒီနေ့ကျရောက်တဲ့ မွေးနေ့မှစပြီး လိုအင်ဆန္ဒများအားလုံး ပြည့်ဝပါစေ<br>ကျန်းမာပျော်ရွှင်တဲ့ဘဝကို အမြဲပိုင်ဆိုင်ပါစေ bubu လေးရေ 💝 ❤️</p>
+  </div>
+
+  <script>
+    const gallery = document.getElementById('gallery');
+    const imageSets = [[
+      'bubu1.jpg','bubu2.jpg','bubu3.jpg','bubu4.jpg','bubu5.jpg',
+      'bubu6.jpg','bubu7.jpg','bubu8.jpg','bubu9.jpg','bubu10.jpg'
+    ]];
+
+    function loadImages(set) {
+      gallery.innerHTML = '';
+      set.forEach(imgUrl => {
+        const img = document.createElement('img');
+        img.src = imgUrl;
+        gallery.appendChild(img);
+      });
+    }
+
+    loadImages(imageSets[0]);
+
+    const audioControl = document.getElementById('audioControl');
+    const birthdayAudio = document.getElementById('birthdayAudio');
+    let isPlaying = false;
+
+    audioControl.addEventListener('click', () => {
+      if (isPlaying) {
+        birthdayAudio.pause();
+        audioControl.textContent = 'Play Music';
+      } else {
+        birthdayAudio.play();
+        audioControl.textContent = 'Pause Music';
+      }
+      isPlaying = !isPlaying;
+    });
+
+    const surpriseBtn = document.getElementById('surpriseBtn');
+    const message = document.getElementById('message');
+
+    surpriseBtn.addEventListener('click', () => {
+      message.classList.add('show');
+      setTimeout(() => message.classList.remove('show'), 6000);
+    });
+    
+
+    // Typing Game
+    let score = 0;
+    let timeLeft = 30;
+    let gameStarted = false;
+    let countdown;
+    let currentLetter = '';
+
+    const letterDisplay = document.getElementById('letter');
+    const scoreboard = document.getElementById('scoreboard');
+    const timerDisplay = document.getElementById('timer');
+    const startBtn = document.getElementById('startBtn');
+
+    function getRandomLetter() {
+      const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      return letters[Math.floor(Math.random() * letters.length)];
+    }
+
+    function showNewLetter() {
+      currentLetter = getRandomLetter();
+      letterDisplay.textContent = currentLetter;
+    }
+
+    function startGame() {
+      if (gameStarted) return;
+      gameStarted = true;
+      score = 0;
+      timeLeft = 30;
+      scoreboard.textContent = 'Score: 0';
+      timerDisplay.textContent = `Time Left: ${timeLeft}s`;
+      showNewLetter();
+
+      countdown = setInterval(() => {
+        timeLeft--;
+        timerDisplay.textContent = `Time Left: ${timeLeft}s`;
+        if (timeLeft <= 0) {
+          clearInterval(countdown);
+          gameStarted = false;
+          alert(`Time's up!\nGood job baby💝\nYour score: ${score}`);
+          letterDisplay.textContent = '-';
+        }
+      }, 1000);
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (!gameStarted) return;
+      if (e.key.toUpperCase() === currentLetter) {
+        score++;
+        scoreboard.textContent = `Score: ${score}`;
+        showNewLetter();
+      }
+    });
+
+    startBtn.addEventListener('click', startGame);
+  </script>
+</body>
+</html>
